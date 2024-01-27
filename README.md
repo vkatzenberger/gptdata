@@ -1,4 +1,4 @@
-# GPT Advice
+# GPT Data
 ## CS50 Final Hobby Project
 ### Using ChatGPT API for working with data
 

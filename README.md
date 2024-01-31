@@ -23,7 +23,3 @@ Git collaboration working, super project started
 ### 5
 
 Test
-
-### 6
-
-My new post.

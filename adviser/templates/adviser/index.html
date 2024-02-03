@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block main %}
+  <h2>Upload a Document</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+        <label for="{{ form.title.id_for_label }}">Title:</label>
+        {{ form.title }} <!-- Renders the title field -->
+        {{ form.title.errors }} <!-- Displays errors for the title field -->
+      </div>
+      <div>
+        {{ form.uploaded_file }} <!-- Renders the file input field -->
+        {{ form.uploaded_file.errors }} <!-- Displays errors for the file field -->
+      </div><br>
+      <button type="submit">Upload</button>
+  </form>
+  <br><br>
+  <h2>Uploaded Documents</h2>
+  <u1>
+    {% for document in documents %}
+    <li>{{ document.title }}: {{document.uploaded_file.url }}</li>
+    {% endfor %}
+  </u1>
+  {% endblock %}

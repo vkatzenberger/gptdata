@@ -1,25 +1,44 @@
 {% extends "layout.html" %}
 
 {% block main %}
-  <h2>Upload a Document</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-field-container">
-        <label for="{{ form.title.id_for_label }}">Title:</label>
-        {{ form.title }} <!-- Renders the title field -->
-        {{ form.title.errors }} <!-- Displays errors for the title field -->
-      </div>
-      <div class="form-field-container">
-        {{ form.uploaded_file }} <!-- Renders the file input field -->
-        {{ form.uploaded_file.errors }} <!-- Displays errors for the file field -->
-      </div><br>
-      <button type="submit">Upload</button>
-  </form>
-  <br><br>
-  <h2>Uploaded Documents</h2>
-  <u1>
-    {% for document in documents %}
-    <li><b>{{ document.title }}</b>: {{document.uploaded_file.url }}</li>
-    {% endfor %}
-  </u1>
-  {% endblock %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.title.id_for_label }}" class="form-label">Title:</label>
+            <input type="text" class="form-control {% if form.title.errors %}is-invalid{% endif %}" id="{{ form.title.id_for_label }}" name="{{ form.title.html_name }}" value="{{ form.title.value|default_if_none:'' }}">
+            {% for error in form.title.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.uploaded_file.id_for_label }}" class="form-label">File:</label>
+            <input type="file" class="form-control {% if form.uploaded_file.errors %}is-invalid{% endif %}" id="{{ form.uploaded_file.id_for_label }}" name="{{ form.uploaded_file.html_name }}">
+            {% for error in form.uploaded_file.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+    <br>
+
+    <h2>Documents</h2>
+    <form method="post" enctype="multipart/form-data">
+    <select class="form-select" aria-label="Default select example">
+      <option selected>Select a file</option>
+      {% for document in documents %}
+      <option value="document.uploaded_file.url"><b>{{ document.title }}</b>: {{document.uploaded_file.url }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    <button type="submit" class="btn btn-primary">Work with the File</button>
+    </form>
+{% endblock %}

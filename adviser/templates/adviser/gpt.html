@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    <h3>File successfully passed.</h3><br>
+    File name: <b>{{ data_file.title }}</b><br>
+    File root: <b>{{ data_file.uploaded_file }}</b><br>
+    File uploaded: <b>{{ data_file.uploaded_at }}</b>
+{% endblock %}

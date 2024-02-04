@@ -31,14 +31,23 @@
     <br>
 
     <h2>Documents</h2>
-    <form method="post" enctype="multipart/form-data">
-    <select class="form-select" aria-label="Default select example">
-      <option selected>Select a file</option>
-      {% for document in documents %}
-      <option value="document.uploaded_file.url"><b>{{ document.title }}</b>: {{document.uploaded_file.url }}</option>
-      {% endfor %}
-    </select>
-    <br>
-    <button type="submit" class="btn btn-primary">Work with the File</button>
+    <form id="documentForm" action="" method="post" data-base-action="{% url 'adviser:gpt_base' %}">
+        {% csrf_token %}
+        <select id="documentSelect" class="form-select" aria-label="Select form">
+            <option selected>Select a file</option>
+            {% for document in documents %}
+                <option value="{{ document.id }}">{{ document.title }}: {{ document.uploaded_file.url }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <script>
+        document.getElementById('documentSelect').addEventListener('change', function() {
+            var selectedDocumentId = this.value;
+            var form = document.getElementById('documentForm');
+            var baseAction = form.getAttribute('data-base-action');
+            form.action = baseAction + selectedDocumentId + '/';
+        });
+    </script>
 {% endblock %}

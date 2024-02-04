@@ -38,18 +38,24 @@ h1, h2 {
 
 .form-control {
     background-color: #fff;
-    border: 1px solid var(--bs-info);
+    border: 2px solid var(--bs-info);
     margin: 10px 0;
-    width: 40%;
+    width: 25%;
     display: inline-block;
+    border-radius: .25rem; /* Rounded corners */
 }
 
 .form-select {
     background-color: #fff;
-    border: 1px solid var(--bs-info);
+    border: 2px solid var(--bs-info);
     margin: 10px 0;
-    width: 60%;
+    width: 50%;
     display: inline-block;
+}
+
+.form-select:focus {
+    border-color: var(--bs-primary); /* Change border color on focus */
+    box-shadow: 0 0 0 .25rem rgba(48, 227, 202, .25); /* Glow effect on focus */
 }
 
 a, a:hover {

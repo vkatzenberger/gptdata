@@ -5,9 +5,9 @@ from .forms import DocumentForm
 from .models import Document
 import os
 from . import constants
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain.indexes import VectorstoreIndexCreator
+from langchain_openai import ChatOpenAI
 
 # Create your views here.
 
@@ -34,15 +34,17 @@ def gpt(request, document_id):
         # Set the API key
         os.environ["OPENAI_API_KEY"] = constants.APIKEY
         # Add a question to query
-        query = "How old are the chinchillas?"
+        query = "Who are working on the project? Give me at least 3 rows of information related to this topics."
         file_path = str(settings.MEDIA_ROOT / data_file.uploaded_file.name)
         # Test before working with GPT
         print(f"Query: {query}")
         print(f"File path: {file_path}")
         # GPT API
         loader = TextLoader(file_path)
+        # You can load in it an entire directory
+        # loader = DirectoryLoader(".", glob="*.txt")
         index = VectorstoreIndexCreator().from_loaders([loader])
-        answer = index.query(query)
+        answer = index.query(query, llm=ChatOpenAI())
         
         # Print the answer
         print(f"Answer: {answer}")

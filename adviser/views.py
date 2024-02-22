@@ -17,7 +17,7 @@ def index(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'File uploaded successfully!')
-            return redirect('index')
+            return redirect('adviser:index')
     elif request.method == 'GET':
         form = DocumentForm()
     documents = Document.objects.all()

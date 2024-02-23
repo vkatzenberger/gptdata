@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from .forms import DocumentForm
 from .models import Document
 import os
@@ -29,29 +31,51 @@ def index(request):
 def gpt(request, document_id):
     if request.method == 'POST':
         firstQuestion = request.POST.get('firstQuestion')
+        loadAll = bool(request.POST.get('loadAll'))
         question = request.POST.get('question')
-        # Get the data file with the document id
         data_file = get_object_or_404(Document, pk=document_id)
-        # Get the file path
-        file_path = str(settings.MEDIA_ROOT / data_file.uploaded_file.name)
+        
+
+        if loadAll == False:
+            file_path = str(settings.MEDIA_ROOT / data_file.uploaded_file.name)
+            loader = TextLoader(file_path)
+        else:
+            file_path = str(settings.MEDIA_ROOT) + "/documents/"
+            loader = DirectoryLoader(file_path, glob="*.txt", loader_cls=TextLoader)
+        
         # Set the API key
         os.environ["OPENAI_API_KEY"] = constants.APIKEY
         
-        # GPT API
-        loader = TextLoader(file_path)
-        # You can load in it an entire directory
-        # loader = DirectoryLoader(".", glob="*.txt")
-        index = VectorstoreIndexCreator().from_loaders([loader])        
-
+        print(f"file_path: {file_path}")
+        print(f"LoadAll: {loadAll}")       
+        
+        index = VectorstoreIndexCreator().from_loaders([loader])
+                
+        
         if firstQuestion == "True":
-            query = "Please write File ready! I am ready for the questions."
+            query = "Please write I am ready for the questions!"
         elif firstQuestion == "False":
             query = question
-            
+           
         answer = index.query(query, llm=ChatOpenAI())
         messages.success(request, answer)
 
-        return render(request, "adviser/gpt.html", {"data_file": data_file, "firstQuestion": "False"})
+        return render(request, "adviser/gpt.html", {"data_file": data_file if not loadAll else None, "firstQuestion": "False", "loadAll" : loadAll})
+        
 
     elif request.method == 'GET':
         return redirect('index')
+    
+@require_http_methods(['DELETE'])
+def delete_document(request, document_id):
+    # Get the data file with the document id
+    data_file = get_object_or_404(Document, pk=document_id)
+    # Get the file path
+    file_path = str(settings.MEDIA_ROOT / data_file.uploaded_file.name)
+    # Delete the file
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    # Delete the document object
+    data_file.delete()
+    return JsonResponse({'message': 'Document deleted successfully'}, status=204)

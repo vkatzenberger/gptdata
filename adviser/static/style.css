@@ -1,6 +1,7 @@
 :root {
     --bs-main: #333;
-    --bs-primary: #30E3CA;
+    /* --bs-primary: #30E3CA; */
+    --bs-primary: #74AA9C;
     --bs-secondary: #E4F9F5;
     --bs-info: #11999E;
     --bs-danger: #40514E;
@@ -69,6 +70,23 @@ img {
     border-color: var(--bs-primary); /* Change border color on focus */
     box-shadow: 0 0 0 .25rem rgba(48, 227, 202, .25); /* Glow effect on focus */
 }
+
+.form-check {
+    display: inline-block;
+    margin: 10px;
+}
+
+.form-check-label {
+    display: inline-block;
+    font-weight: bold; 
+    font-family: 'Arial', sans-serif; 
+    transition: color 0.3s; 
+}
+
+.form-check-label:hover {
+    color: var(--bs-info);
+}    
+
 
 a, a:hover {
     color: var(--bs-danger);

@@ -1,15 +1,31 @@
 {% extends "layout.html" %}
 
 {% block main %}
+    <h4>{{ data_file.title }} ({{ data_file.uploaded_file }})</h4>
+    <form id="questionForm" data-base-action="{% url 'adviser:gpt_base' %}" method="post">
+        {% csrf_token %}
+            <input type="hidden" id="firstQuestion" name="firstQuestion" value="{{ firstQuestion }}">
+            <input type="hidden" id="documentId" name="documentId" value="{{ data_file.id }}">
+            <input type="text" class="form-control" id="question" name="question" placeholder="Enter your question">
+            <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var selectedDocumentId = "{{ data_file.id }}";
+            document.getElementById('documentId').value = selectedDocumentId;
+
+            var form = document.getElementById('questionForm');
+            var baseAction = form.getAttribute('data-base-action');
+            form.action = baseAction + selectedDocumentId + '/';
+        });
+    </script>
+
     {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-    {% endfor %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
     {% endif %}
 
-    File name: <b>{{ data_file.title }}</b><br>
-    File root: <b>{{ data_file.uploaded_file }}</b><br>
-    File uploaded: <b>{{ data_file.uploaded_at }}</b>
 {% endblock %}

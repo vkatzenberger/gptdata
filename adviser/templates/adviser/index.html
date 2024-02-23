@@ -33,6 +33,7 @@
     <h2>Documents</h2>
     <form id="documentForm" action="" method="post" data-base-action="{% url 'adviser:gpt_base' %}">
         {% csrf_token %}
+        <input type="hidden" name="firstQuestion" value="True">
         <select id="documentSelect" class="form-select" aria-label="Select form">
             <option selected>Select a file</option>
             {% for document in documents %}

@@ -28,28 +28,30 @@ def index(request):
 
 def gpt(request, document_id):
     if request.method == 'POST':
+        firstQuestion = request.POST.get('firstQuestion')
+        question = request.POST.get('question')
         # Get the data file with the document id
         data_file = get_object_or_404(Document, pk=document_id)
-        messages.success(request, 'File passed successfully!')
+        # Get the file path
+        file_path = str(settings.MEDIA_ROOT / data_file.uploaded_file.name)
         # Set the API key
         os.environ["OPENAI_API_KEY"] = constants.APIKEY
-        # Add a question to query
-        query = "Who are working on the project? Give me at least 3 rows of information related to this topics."
-        file_path = str(settings.MEDIA_ROOT / data_file.uploaded_file.name)
-        # Test before working with GPT
-        print(f"Query: {query}")
-        print(f"File path: {file_path}")
+        
         # GPT API
         loader = TextLoader(file_path)
         # You can load in it an entire directory
         # loader = DirectoryLoader(".", glob="*.txt")
-        index = VectorstoreIndexCreator().from_loaders([loader])
-        answer = index.query(query, llm=ChatOpenAI())
-        
-        # Print the answer
-        print(f"Answer: {answer}")
+        index = VectorstoreIndexCreator().from_loaders([loader])        
 
-        return render(request, "adviser/gpt.html", {"data_file": data_file})
+        if firstQuestion == "True":
+            query = "Please write File ready! I am ready for the questions."
+        elif firstQuestion == "False":
+            query = question
+            
+        answer = index.query(query, llm=ChatOpenAI())
+        messages.success(request, answer)
+
+        return render(request, "adviser/gpt.html", {"data_file": data_file, "firstQuestion": "False"})
 
     elif request.method == 'GET':
         return redirect('index')

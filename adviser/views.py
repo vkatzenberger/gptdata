@@ -30,7 +30,8 @@ def index(request):
 
 def gpt(request, document_id):
     if request.method == 'POST':
-        firstQuestion = request.POST.get('firstQuestion')
+        firstQuestion = bool(request.POST.get('firstQuestion'))
+        
         loadAll = bool(request.POST.get('loadAll'))
         question = request.POST.get('question')
         data_file = get_object_or_404(Document, pk=document_id)
@@ -40,27 +41,24 @@ def gpt(request, document_id):
             file_path = str(settings.MEDIA_ROOT / data_file.uploaded_file.name)
             loader = TextLoader(file_path)
         else:
-            file_path = str(settings.MEDIA_ROOT) + "/documents/"
+            file_path = str(settings.MEDIA_ROOT) + "\\documents\\"
             loader = DirectoryLoader(file_path, glob="*.txt", loader_cls=TextLoader)
         
         # Set the API key
         os.environ["OPENAI_API_KEY"] = constants.APIKEY
         
-        print(f"file_path: {file_path}")
-        print(f"LoadAll: {loadAll}")       
         
-        index = VectorstoreIndexCreator().from_loaders([loader])
-                
+        index = VectorstoreIndexCreator().from_loaders([loader])       
         
-        if firstQuestion == "True":
+        if firstQuestion == True:
             query = "Please write I am ready for the questions!"
-        elif firstQuestion == "False":
+        else:
             query = question
            
-        answer = index.query(query, llm=ChatOpenAI())
+        answer = index.query(query, llm=ChatOpenAI(model="gpt-3.5-turbo-0125"))
         messages.success(request, answer)
 
-        return render(request, "adviser/gpt.html", {"data_file": data_file if not loadAll else None, "firstQuestion": "False", "loadAll" : loadAll})
+        return render(request, "adviser/gpt.html", {"data_file": data_file if not loadAll else None, "firstQuestion": "", "loadAll" : "" if not loadAll else loadAll})
         
 
     elif request.method == 'GET':

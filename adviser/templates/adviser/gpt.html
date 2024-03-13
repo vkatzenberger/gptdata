@@ -7,7 +7,7 @@
     <form id="questionForm" data-base-action="{% url 'adviser:gpt_base' %}" method="post">
         {% csrf_token %}
             <input type="hidden" id="firstQuestion" name="firstQuestion" value="{{ firstQuestion }}">
-            <input type="hidden" id="loadAll" name="loadAll" value="{% if data_file %}false{% else %}{{ loadAll }}{% endif %}">
+            <input type="hidden" id="loadAll" name="loadAll" value="{{ loadAll }}">
             {% if data_file %}    
                 <input type="hidden" id="documentId" name="documentId" value="{{ data_file.id }}">
             {% endif %}

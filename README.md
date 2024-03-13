@@ -1,25 +1,9 @@
-# GPT Data
+# GPT Advice
 
-## CS50 Final Hobby Project
+## CS50x Final Hobby Project
 
-### Using ChatGPT API for working with data
+#### Using ChatGPT API for working with data
 
-### 1
+#### Description:
 
-Git setup completed.
-
-### 2
-
-Local branch katz created.
-
-### 3
-
-Balu branch first commit.
-
-### 4
-
-Git collaboration working, super project started
-
-### 5
-
-Test
+It is a Python-Django web based application to ask questions and get answers using OpenAI GPT API on provided text files or on an entire directory.
